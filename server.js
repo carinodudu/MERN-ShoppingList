@@ -1,28 +1,32 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const path = require('path');
-
-const items = require('./routes/api/items');
+const config = require('config');
 
 const app = express();
 
 // Bodyparser Middleware
-app.use(bodyParser.json());
+app.use(express.json());
 
 // DB Config 데이터베이스 설정
-const db = require('./config/keys').mongoURI;
+const db = config.get('mongoURI');
 
 // Connect to Mongo 몽고DB 연결 
 // {useNewUrlParser: true, useUnifiedTopology: true} 버전 문제로 삽입해야 함
  mongoose
-    .connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
+    .connect(db, {
+        useNewUrlParser: true,
+        useCreateIndex: true, 
+        useUnifiedTopology: true
+    }) // Adding new mongo url parser, create index url parser과 create index 정보 설정  
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err));
 
 
 // Use Routes
-app.use('/api/items', items);
+app.use('/api/items', require('./routes/api/items'));
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
 
 // Serve static assets if in production
 if(process.env.NODE_ENV === 'production') {
