@@ -11,11 +11,16 @@ import {
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import { addItem } from '../actions/itemActions';
+import PropTypes from 'prop-types';
 
 class ItemModal extends Component {
     state = {
         modal: false,
         name: ''
+    }
+
+    static propTypes = {
+        isAuthenticated: PropTypes.bool
     }
 
     toggle = () => {
@@ -46,14 +51,20 @@ class ItemModal extends Component {
     render() {
         return(
             <div>
-                <Button
-                color="dark"
-                style={{marginBottom: '2rem'}}
-                onClick={this.toggle}
-                >
-                상품 추가 
-                </Button>
-
+                { 
+                    this.props.isAuthenticated ? 
+                    <Button
+                    color="dark"
+                    style={{marginBottom: '2rem'}}
+                    onClick={this.toggle}
+                    >
+                    상품 추가 
+                    </Button>
+                    :
+                    <h4 className="mb-3 ml-4">
+                        로그인 후에 아이템을 관리할 수 있습니다.
+                    </h4>
+                }
                 <Modal
                 isOpen={this.state.modal}
                 toggle={this.toggle}
@@ -91,7 +102,8 @@ class ItemModal extends Component {
 }
 
 const mapStateToProps = state => ({
-    item: state.item
+    item: state.item,
+    isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps, { addItem })(ItemModal);
