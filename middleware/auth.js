@@ -6,7 +6,7 @@ function auth(req, res, next) {
 
     // Check for token 토큰 존재 여부 확인
     if(!token) {
-        res.status(401).json({ msg: '토큰이 없어, 인증이 거부되었습니다.'});
+        return res.status(401).json({ msg: '토큰이 없어, 인증이 거부되었습니다.'});
     }
 
     try {
